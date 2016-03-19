@@ -18,7 +18,8 @@ $(document).ready(function() {
 		arr_board[i] = new Array(cubeNum);
 
 	/*一開始加入遊戲，使用者輸入名稱，回傳server*/
-	var userName = prompt("Please enter your name", "OpenStack").trim();
+	var promptedName = prompt("Please enter your name", "OpenStack");
+	var userName = promptedName && promptedName.trim();
 	if (userName != null) {
 		$.ajax({
 			url: "http://172.17.183.204/api/user", //http://172.17.183.204/api/user
