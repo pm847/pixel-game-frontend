@@ -60,7 +60,6 @@ $(document).ready(function() {
 /*剛進入遊戲和接下來不斷去找server要資料，確認局數相同，
   一旦不同，則更新所有棋盤資訊。*/
 function getBoardData(arr_board) {
-
 	/*Ajax決定是否收到棋盤整局訊息，並renew*/
 	$.ajax({
 		url: "http://172.17.183.204/api/board?board_id=" + boardId, //http://172.17.183.204/api/board?board_id=" + boardId
@@ -141,7 +140,7 @@ function setPos(e) {
 
 	//回傳新位置
 	$.ajax({
-		url: "http://172.17.183.204/board", //http://172.17.183.204/board
+		url: "http://172.17.183.204/api/board", //http://172.17.183.204/api/board
 		type: "POST",
 		dataType: "json",
 		data: moveData,
