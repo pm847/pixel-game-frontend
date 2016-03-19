@@ -22,7 +22,7 @@ $(document).ready(function() {
 	if (userName) userName = userName.trim();
 	if (userName != null) {
 		$.ajax({
-			url: "http://172.17.183.204/api/user", //http://172.17.183.204/api/user
+			url: "http://172.17.183.204/api/user",
 			type: "POST",
 			dataType: "json",
 			data: userName,
@@ -67,10 +67,10 @@ $(document).ready(function() {
 function getBoardData(arr_board) {
 	/*Ajax決定是否收到棋盤整局訊息，並renew*/
 	$.ajax({
-		url: "http://172.17.183.204/api/board?board_id=" + boardId, //http://172.17.183.204/api/board?board_id=" + boardId
+		url: "http://172.17.183.204/api/board?board_id=" + boardId,
 		type: "GET",
 		dataType: "json",
-		success: function(getJData) { //update該發亮的點為true
+		success: function(getJData) { //update true for light pos
 			if (round !== getJData.round) {
 				round = getJData.round;
 
@@ -86,21 +86,21 @@ function getBoardData(arr_board) {
 				for (var i = 0; i < getJData.goals.length; i++) //blue for goal
 					arr_board[getJData.goals[i].x][getJData.goals[i].y] = "blue";
 
-				for (var i = 0; i < players.length; i++) { //red for user
+				for (var i = 0; i < players.length; i++) { //orange for user now
 					if (players[i].id === userId) {
 						userPos_X = players[i].x;
 						userPos_Y = players[i].y;
 					}
 				}
+				arr_board[userPos_X][userPos_Y] = "orange";
 
-				arr_board[userPos_X][userPos_Y] = "red";
 				drawBoard(arr_board);
 				redCount--;
 			}
 		},
 
 		error: function() {
-			console.log("ERROR!!!");
+
 		}
 	});
 }
@@ -114,7 +114,7 @@ function drawBoard(arr_board) {
 		for (var j = 0; j < parseInt(canvas.height / cubeLen); j++) {
 			ctx.strokeRect(i * cubeLen, j * cubeLen, cubeLen, cubeLen); //畫邊框
 			ctx.fillStyle = arr_board[i][j] === true ? "#000000" : "#7B7B7B";
-			if (arr_board[i][j] === "red") ctx.fillStyle = "#FF0000";
+			if (arr_board[i][j] === "orange") ctx.fillStyle = "#FF5511 ";
 			else if (arr_board[i][j] === "blue") ctx.fillStyle = "#0000FF";
 			ctx.fillRect(i * cubeLen, j * cubeLen, cubeLen, cubeLen);
 		}
@@ -143,7 +143,7 @@ function setPos(e) {
 
 			//回傳新位置
 			$.ajax({
-				url: "http://172.17.183.204/api/board", //http://172.17.183.204/api/board
+				url: "http://172.17.183.204/api/board",
 				type: "POST",
 				dataType: "json",
 				data: moveData,
