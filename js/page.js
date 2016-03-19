@@ -1,8 +1,8 @@
 var cubeLen = 40;
 var cubeNum = 25;
 
-var userId, boardId, round;
-var userPos_X, userPos_Y, round = -1;
+var userId, boardId, round = -1;
+var userPos_X, userPos_Y;
 var redCount = 0;
 
 var canvas = $("#board")[0];
@@ -105,8 +105,8 @@ function drawBoard(arr_board) {
 	var ctx = canvas.getContext("2d");
 
 	ctx.strokeStyle = "#FFFFFF"; //邊框白色
-	for (var i = 0; i < canvas.width / cubeLen; i++) {
-		for (var j = 0; j < canvas.height / cubeLen; j++) {
+	for (var i = 0; i < parseInt(canvas.width / cubeLen); i++) {
+		for (var j = 0; j < parseInt(canvas.height / cubeLen); j++) {
 			ctx.strokeRect(i * cubeLen, j * cubeLen, cubeLen, cubeLen); //畫邊框
 			ctx.fillStyle = arr_board[i][j] === true ? "#000000" : "#7B7B7B";
 			if (arr_board[i][j] === "red") ctx.fillStyle = "#FF0000";
@@ -118,14 +118,15 @@ function drawBoard(arr_board) {
 
 /*使用者click之後，判斷、設定、紀錄位置*/
 function setPos(e) {
-	var clickX = parseInt(e.offsetX / 10);
-	var clickY = parseInt(e.offsetY / 10);
+	var clickX = parseInt(e.offsetX / cubeLen);
+	var clickY = parseInt(e.offsetY / cubeLen);
 	var ctx = $("#board")[0].getContext("2d");
+	console.log(clickX);
 
 	if (redCount < 1) {
 		if (clickX - userPos_X === 0 && Math.abs(clickY - userPos_Y) === 1 || clickY - userPos_Y === 0 && Math.abs(clickX - userPos_X) === 1) {
 			ctx.fillStyle = "#FF0000";
-			ctx.fillRect(clickX * 10, clickY * 10, cubeLen, cubeLen);
+			ctx.fillRect(clickX * cubeLen, clickY * cubeLen, cubeLen, cubeLen);
 			redCount++;
 		}
 	}
