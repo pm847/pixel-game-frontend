@@ -4,21 +4,23 @@ var cubeNum = 50;
 var canvas = $("#board")[0];
 
 $(document).ready(function() {
-
-alert(JData.length);
 	//Ajax決定是否收到訊息，並renew
-	$.ajax({
-		url: "URL",
+	$.getJSON("testdata.json", function(data){
+
+	alert(data.employees[0].firstName);
+	});
+	/*$.ajax({//success(jdata, status, xhr)
+		url: "http://172.17.183.156:3000/test.json",
 		type: "GET",
 		dataType: "json",
-		success: function(Jdata) {
-			alert("SUCCESS!!!");
+		success: function(result) {
+			alert(result.id +"SUCCESS!!!");
 		},
 
 		error: function() {
 			alert("ERROR!!!");
 		}
-	});
+	});*/
 
 	//initial a 2d array for board
 	var arr_board = new Array(cubeNum * cubeLen);
