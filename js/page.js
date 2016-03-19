@@ -4,16 +4,26 @@ var cubeNum = 100;
 var canvas = $("#board")[0];
 
 $(document).ready(function() {
-	/*一開始send加入遊戲，請回傳相關資料*/
-	$.ajax({
-		url: "",
-		type: "POST",
-		dataType: "json",
-		data: "要傳的",
-		success: function(jdata) {
-			alert("Success!");
-		}
-	});
+	/*一開始加入遊戲，使用者輸入名稱，回傳server*/
+	var userName = prompt("Please enter your name", "OpenStack").trim();
+	if (userName === "") {
+		alert("Empty name.");
+	} else if(userName != null) {
+		$.ajax({
+			url: "http://172.17.183.204/api/user",
+			type: "POST",
+			dataType: "json",
+			data: userName,
+			success: function(jdata) {
+				alert("Get userID & roomID!");
+			},
+			error: function(){
+				alert("ERROR.");
+			}
+		});
+	}
+
+
 
 	/*set canvas size and draw it*/
 	canvas.width = cubeLen * cubeNum;
@@ -21,24 +31,26 @@ $(document).ready(function() {
 
 	/*Create a 2d array for board and */
 	var arr_board = new Array(cubeNum);
-	for(var i = 0; i < cubeNum; i++)
+	for (var i = 0; i < cubeNum; i++)
 		arr_board[i] = new Array(cubeNum);
-	
+
 	for (var i = 0; i < cubeNum; i++)
 		for (var j = 0; j < cubeNum; j++)
 			arr_board[i][j] = false;
 
 	/*Ajax決定是否收到訊息，並renew*/
+	var userPos_X, userPos_Y;
 	$.ajax({
-		url: "http://172.17.183.204/board",//http://172.17.183.204/board
+		url: "http://172.17.183.204/api/board", //http://172.17.183.204/board
 		type: "GET",
 		dataType: "json",
 		success: function(getJData) { //update該發亮的點為true
 			var players = getJData.players;
-			for (var i = 0; i < players.length; i++) {
+			for (var i = 0; i < players.length; i++) 
 				arr_board[players[i].x][players[i].y] = true;
-			}
+
 			drawBoard(arr_board);
+			//設定該使用者的現在位置userPos_X = players
 		},
 
 		error: function() {
@@ -58,11 +70,11 @@ $(document).ready(function() {
 function drawBoard(arr_board) {
 	var ctx = canvas.getContext("2d");
 
-	ctx.strokeStyle = "#FFFFFF";//邊框白色
+	ctx.strokeStyle = "#FFFFFF"; //邊框白色
 	for (var i = 0; i < canvas.width; i += cubeLen) {
 		for (var j = 0; j < canvas.height; j += cubeLen) {
-			ctx.strokeRect(i, j, cubeLen, cubeLen);//畫邊框
-			ctx.fillStyle = arr_board[i/10][j/10] === true? "#000000" : "#7B7B7B";
+			ctx.strokeRect(i, j, cubeLen, cubeLen); //畫邊框
+			ctx.fillStyle = arr_board[i / 10][j / 10] === true ? "#000000" : "#7B7B7B";
 			ctx.fillRect(i, j, cubeLen, cubeLen);
 		}
 	}
