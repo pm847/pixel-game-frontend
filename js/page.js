@@ -1,5 +1,5 @@
-var cubeLen = 10;
-var cubeNum = 100;
+var cubeLen = 40;
+var cubeNum = 25;
 
 var userId, boardId, round;
 var userPos_X, userPos_Y, round = -1;
@@ -18,7 +18,8 @@ $(document).ready(function() {
 		arr_board[i] = new Array(cubeNum);
 
 	/*一開始加入遊戲，使用者輸入名稱，回傳server*/
-	var userName = prompt("Please enter your name", "OpenStack").trim();
+	var userName = prompt("Please enter your name", "OpenStack");
+	if (userName) userName = userName.trim();
 	if (userName != null) {
 		$.ajax({
 			url: "http://172.17.183.204/api/user", //http://172.17.183.204/api/user
@@ -26,7 +27,6 @@ $(document).ready(function() {
 			dataType: "json",
 			data: userName,
 			success: function(jdata) {
-				console.log("Get userId: " + jdata.userId + " boardId: " + jdata.boardId + "!");
 				userId = jdata.userId;
 				boardId = jdata.boardId;
 
@@ -71,14 +71,17 @@ function getBoardData(arr_board) {
 
 				var players = getJData.players;
 
-				for (var i = 0; i < cubeNum; i++)
+				for (var i = 0; i < cubeNum; i++)//grey for default
 					for (var j = 0; j < cubeNum; j++)
 						arr_board[i][j] = false;
 
-				for (var i = 0; i < players.length; i++)
+				for (var i = 0; i < players.length; i++)//black for other users
 					arr_board[players[i].x][players[i].y] = true;
 
-				for (var i = 0; i < players.length; i++) {
+				for (var i = 0; i < getJData.goals.length; i++)//blue for goal
+					arr_board[getJData.goals[i].x][getJData.goals[i].y] = "blue";
+
+				for (var i = 0; i < players.length; i++) {//red for user
 					if (players[i].id === userId) {
 						userPos_X = players[i].x;
 						userPos_Y = players[i].y;
@@ -86,10 +89,8 @@ function getBoardData(arr_board) {
 				}
 
 				arr_board[userPos_X][userPos_Y] = "red";
-
 				drawBoard(arr_board);
 				redCount--;
-				console.log(redCount);
 			}
 		},
 
@@ -104,12 +105,13 @@ function drawBoard(arr_board) {
 	var ctx = canvas.getContext("2d");
 
 	ctx.strokeStyle = "#FFFFFF"; //邊框白色
-	for (var i = 0; i < canvas.width; i += cubeLen) {
-		for (var j = 0; j < canvas.height; j += cubeLen) {
-			ctx.strokeRect(i, j, cubeLen, cubeLen); //畫邊框
-			ctx.fillStyle = arr_board[i / 10][j / 10] === true ? "#000000" : "#7B7B7B";
-			if (arr_board[i / 10][j / 10] === "red") ctx.fillStyle = "#FF0000";
-			ctx.fillRect(i, j, cubeLen, cubeLen);
+	for (var i = 0; i < canvas.width / cubeLen; i++) {
+		for (var j = 0; j < canvas.height / cubeLen; j++) {
+			ctx.strokeRect(i * cubeLen, j * cubeLen, cubeLen, cubeLen); //畫邊框
+			ctx.fillStyle = arr_board[i][j] === true ? "#000000" : "#7B7B7B";
+			if (arr_board[i][j] === "red") ctx.fillStyle = "#FF0000";
+			else if (arr_board[i][j] === "blue") ctx.fillStyle = "#0000FF";
+			ctx.fillRect(i * cubeLen, j * cubeLen, cubeLen, cubeLen);
 		}
 	}
 }
@@ -142,8 +144,8 @@ function setPos(e) {
 		type: "POST",
 		dataType: "json",
 		data: moveData,
-		success: function(getJData) { //update該發亮的點為true
-			console.log("DD");
+		success: function(getJData) {
+
 		},
 
 		error: function() {
