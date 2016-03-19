@@ -3,12 +3,29 @@ var cubeNum = 50;
 
 var canvas = $("#board")[0];
 
-$(document).ready(function(){
-	//init a 2d array for board
+$(document).ready(function() {
+
+alert(JData.length);
+	//Ajax決定是否收到訊息，並renew
+	$.ajax({
+		url: "URL",
+		type: "GET",
+		dataType: "json",
+		success: function(Jdata) {
+			alert("SUCCESS!!!");
+		},
+
+		error: function() {
+			alert("ERROR!!!");
+		}
+	});
+
+	//initial a 2d array for board
 	var arr_board = new Array(cubeNum * cubeLen);
-	for(var i = 0; i < cubeNum; i++)
-		for(var j = 0; j < cubeNum; j++)
-			arr_board[i,j] = false;
+	for (var i = 0; i < cubeNum; i++)
+		for (var j = 0; j < cubeNum; j++)
+			arr_board[i, j] = false;
+
 	//傳入的JSON資料, update array
 
 	//set canvas size and draw it
@@ -19,13 +36,13 @@ $(document).ready(function(){
 	/*$("#board").mousemove(function(e){
 		onCube(e);
 	})*/
-	$("#board").on("click", function(e){
+	$("#board").on("click", function(e) {
 		setPos(e);
 	});
 
 });
 
-function drawBoard(){
+function drawBoard() {
 	var ctx = canvas.getContext("2d");
 
 	//background Rect
@@ -34,9 +51,9 @@ function drawBoard(){
 
 	//Small Rect
 	ctx.strokeStyle = "#FFFFFF";
-	for(var i = 0; i < canvas.width; i+=cubeLen){
-		for(var j = 0; j < canvas.height; j+=cubeLen){
-			ctx.strokeRect(i, j, cubeLen, cubeLen);	
+	for (var i = 0; i < canvas.width; i += cubeLen) {
+		for (var j = 0; j < canvas.height; j += cubeLen) {
+			ctx.strokeRect(i, j, cubeLen, cubeLen);
 			//未來加入不同顏色的方塊(有人)
 		}
 	}
@@ -44,12 +61,12 @@ function drawBoard(){
 }
 
 //user's mouse click position
-function setPos(e){
+function setPos(e) {
 	var clickX = parseInt(e.offsetX / 10);
 	var clickY = parseInt(e.offsetY / 10);
 	var ctx = $("#board")[0].getContext("2d");
 	ctx.fillStyle = "#000000";
-	ctx.fillRect(clickX*10, clickY*10, cubeLen, cubeLen);
+	ctx.fillRect(clickX * 10, clickY * 10, cubeLen, cubeLen);
 }
 
 /*function onCube(e){
