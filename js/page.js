@@ -1,8 +1,8 @@
 var cubeLen = 10;
 var cubeNum = 100;
 
-var userId, boardId;
-var userPos_X, userPos_Y;
+var userId, boardId, round;
+var userPos_X, userPos_Y, round = -1;
 var redCount = 0;
 
 var canvas = $("#board")[0];
@@ -17,16 +17,11 @@ $(document).ready(function() {
 	for (var i = 0; i < cubeNum; i++)
 		arr_board[i] = new Array(cubeNum);
 
-	for (var i = 0; i < cubeNum; i++)
-		for (var j = 0; j < cubeNum; j++)
-			arr_board[i][j] = false;
-
-
 	/*一開始加入遊戲，使用者輸入名稱，回傳server*/
 	var userName = prompt("Please enter your name", "OpenStack").trim();
 	if (userName != null) {
 		$.ajax({
-			url: "user.json", //http://172.17.183.204/api/user
+			url: "http://172.17.183.204/api/user", //http://172.17.183.204/api/user
 			type: "POST",
 			dataType: "json",
 			data: userName,
@@ -43,6 +38,14 @@ $(document).ready(function() {
 		});
 	}
 
+	setInterval(getBoardData, 1000, arr_board);
+
+	/*使用者click之後，變色、紀錄位置、回傳位置*/
+	//之後要增加換位置
+	$("#board").on("click", function(e) {
+		setPos(e);
+	});
+
 	/*window.onbeforeunload = function(e) {
 		e.preventDefault();
 		$.ajax({
@@ -52,33 +55,43 @@ $(document).ready(function() {
 			data: "leave"
 		})
 	};*/
-
-	/*使用者click之後，變色、紀錄位置、回傳位置*/
-	//之後要增加換位置
-	$("#board").on("click", function(e) {
-		setPos(e);
-	});
 });
 
+/*剛進入遊戲和接下來不斷去找server要資料，確認局數相同，
+  一旦不同，則更新所有棋盤資訊。*/
 function getBoardData(arr_board) {
+
 	/*Ajax決定是否收到棋盤整局訊息，並renew*/
 	$.ajax({
-		url: "board.json", //http://172.17.183.204/api/board?board_id=" + boardId
+		url: "http://172.17.183.204/api/board?board_id=" + boardId, //http://172.17.183.204/api/board?board_id=" + boardId
 		type: "GET",
 		dataType: "json",
 		success: function(getJData) { //update該發亮的點為true
-			var players = getJData.players;
-			for (var i = 0; i < players.length; i++)
-				arr_board[players[i].x][players[i].y] = true;
+			if (round !== getJData.round) {
+				round = getJData.round;
 
-			for (var i = 0; i < players.length; i++)
-				if (players[i].id === userId) {
-					userPos_X = players[i].x;
-					userPos_Y = players[i].y;
+				var players = getJData.players;
+
+				for (var i = 0; i < cubeNum; i++)
+					for (var j = 0; j < cubeNum; j++)
+						arr_board[i][j] = false;
+
+				for (var i = 0; i < players.length; i++)
+					arr_board[players[i].x][players[i].y] = true;
+
+				for (var i = 0; i < players.length; i++) {
+					if (players[i].id === userId) {
+						userPos_X = players[i].x;
+						userPos_Y = players[i].y;
+					}
 				}
-			arr_board[userPos_X][userPos_Y] = "red";
 
-			drawBoard(arr_board);
+				arr_board[userPos_X][userPos_Y] = "red";
+
+				drawBoard(arr_board);
+				redCount--;
+				console.log(redCount);
+			}
 		},
 
 		error: function() {
@@ -115,41 +128,23 @@ function setPos(e) {
 			redCount++;
 		}
 	}
-	/*var lastCubeColor, lastX, lastY;
-		else if (redCount === 1) {
-		if (clickX - userPos_X === 0 && Math.abs(clickY - userPos_Y) === 1 || clickY - userPos_Y === 0 && Math.abs(clickX - userPos_X) === 1) {
-			ctx.fillStyle = lastCubeColor ? "#000000" : "#7B7B7B";
-			ctx.fillRect(lastX * 10, lastY * 10, cubeLen, cubeLen);
-			ctx.fillStyle = "#FF0000";
-			ctx.fillRect(clickX * 10, clickY * 10, cubeLen, cubeLen);
-			console.log(lastCubeColor);
-		}
-	}*/
+
 	var moveData = {
-
-		"userId": "abcd-efgh",
-
-		"boardId": "asdfasdf",
-
-		"nextRound": 11,
-
+		"userId": userId,
+		"boardId": boardId,
+		"nextRound": round,
 		"nextMove": {
-
-			"x": 100,
-
-			"y": 101
-
+			"x": clickX,
+			"y": clickY
 		}
-
 	}
-
 
 	//回傳新位置
 	$.ajax({
-		url: "http://172.17.183.204/api/board", //http://172.17.183.204/board
+		url: "http://172.17.183.204/board", //http://172.17.183.204/board
 		type: "POST",
 		dataType: "json",
-		data: "要傳的",
+		data: moveData,
 		success: function(getJData) { //update該發亮的點為true
 			console.log("DD");
 		},
@@ -159,11 +154,3 @@ function setPos(e) {
 		}
 	});
 }
-//之後想增加動畫用
-/*function onCube(e){
-	var clickX = parseInt(e.offsetX / 10);
-	var clickY = parseInt(e.offsetY / 10);
-	var ctx = canvas.getContext("2d");
-	ctx.fillStyle = "#000000";
-	ctx.fillRect(clickX*10, clickY*10, cubeLen, cubeLen);
-}*/
