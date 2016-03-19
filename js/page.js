@@ -3,7 +3,7 @@ var cubeNum = 25;
 
 var userId, boardId, round = -1;
 var userPos_X, userPos_Y;
-var redCount = 0;
+var redCount = 1;
 
 var canvas = $("#board")[0];
 
@@ -46,15 +46,20 @@ $(document).ready(function() {
 		setPos(e);
 	});
 
-	/*window.onbeforeunload = function(e) {
+	window.onbeforeunload = function(e) {
+		var user = {
+			"userId": userId,
+			"boardId": boardId
+		};
+
 		e.preventDefault();
 		$.ajax({
-			url: "a.json",
-			type: "POST",
+			url: "http://172.17.183.204/api/user?user_id=" + userId + "&board_id=" + boardId,
+			type: "DELETE",
 			dataType: "json",
-			data: "leave"
+			data: user
 		})
-	};*/
+	};
 });
 
 /*剛進入遊戲和接下來不斷去找server要資料，確認局數相同，
@@ -71,17 +76,17 @@ function getBoardData(arr_board) {
 
 				var players = getJData.players;
 
-				for (var i = 0; i < cubeNum; i++)//grey for default
+				for (var i = 0; i < cubeNum; i++) //grey for default
 					for (var j = 0; j < cubeNum; j++)
-						arr_board[i][j] = false;
+					arr_board[i][j] = false;
 
-				for (var i = 0; i < players.length; i++)//black for other users
+				for (var i = 0; i < players.length; i++) //black for other users
 					arr_board[players[i].x][players[i].y] = true;
 
-				for (var i = 0; i < getJData.goals.length; i++)//blue for goal
+				for (var i = 0; i < getJData.goals.length; i++) //blue for goal
 					arr_board[getJData.goals[i].x][getJData.goals[i].y] = "blue";
 
-				for (var i = 0; i < players.length; i++) {//red for user
+				for (var i = 0; i < players.length; i++) { //red for user
 					if (players[i].id === userId) {
 						userPos_X = players[i].x;
 						userPos_Y = players[i].y;
@@ -121,36 +126,35 @@ function setPos(e) {
 	var clickX = parseInt(e.offsetX / cubeLen);
 	var clickY = parseInt(e.offsetY / cubeLen);
 	var ctx = $("#board")[0].getContext("2d");
-	console.log(clickX);
 
 	if (redCount < 1) {
 		if (clickX - userPos_X === 0 && Math.abs(clickY - userPos_Y) === 1 || clickY - userPos_Y === 0 && Math.abs(clickX - userPos_X) === 1) {
 			ctx.fillStyle = "#FF0000";
 			ctx.fillRect(clickX * cubeLen, clickY * cubeLen, cubeLen, cubeLen);
 			redCount++;
+
+			var moveData = {
+				"userId": userId,
+				"boardId": boardId,
+				"nextRound": round,
+				"nextMoveX": clickX,
+				"nextMoveY": clickY
+			};
+
+			//回傳新位置
+			$.ajax({
+				url: "http://172.17.183.204/api/board", //http://172.17.183.204/api/board
+				type: "POST",
+				dataType: "json",
+				data: moveData,
+				success: function(getJData) {
+
+				},
+
+				error: function() {
+
+				}
+			});
 		}
 	}
-
-	var moveData = {
-		"userId": userId,
-		"boardId": boardId,
-		"nextRound": round,
-		"nextMoveX": clickX,
-		"nextMoveY": clickY
-	};
-
-	//回傳新位置
-	$.ajax({
-		url: "http://172.17.183.204/api/board", //http://172.17.183.204/api/board
-		type: "POST",
-		dataType: "json",
-		data: moveData,
-		success: function(getJData) {
-
-		},
-
-		error: function() {
-			alert("ERROR!!!");
-		}
-	});
 }
