@@ -134,21 +134,20 @@ function setPos(e) {
 		"nextRound": round,
 		"nextMoveX": clickX,
 		"nextMoveY": clickY
-	}
-}
+	};
 
-//回傳新位置
-$.ajax({
-	url: "http://172.17.183.204/api/board", //http://172.17.183.204/api/board
-	type: "POST",
-	dataType: "json",
-	data: moveData,
-	success: function(getJData) { //update該發亮的點為true
-		console.log("DD");
-	},
+	//回傳新位置
+	$.ajax({
+		url: "http://172.17.183.204/api/board", //http://172.17.183.204/api/board
+		type: "POST",
+		dataType: "json",
+		data: moveData,
+		success: function(getJData) { //update該發亮的點為true
+			console.log("DD");
+		},
 
-	error: function() {
-		alert("ERROR!!!");
-	}
-});
+		error: function() {
+			alert("ERROR!!!");
+		}
+	});
 }
