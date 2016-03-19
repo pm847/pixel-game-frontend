@@ -41,7 +41,6 @@ function drawBoard(){
 		}
 	}
 
-	console.log(arr_board[0][0]);
 }
 
 //user's mouse click position
