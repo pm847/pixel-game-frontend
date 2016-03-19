@@ -1,0 +1,139 @@
+{
+    "status": "ongoing",
+    "origin": {
+        "y": 5,
+        "x": 5
+    },
+    "goals": [
+        {
+            "x": 10,
+            "y": 20,
+            "is_achieved": false
+        }
+    ],
+    "numOfPlayers": 19,
+    "players": [
+        {
+            "id": "56ed4e866bc75d6e4dd701e7",
+            "name": "Ms. Anonymous",
+            "x": 5,
+            "y": 5
+        },
+        {
+            "id": "56ed4e876bc75d6e4dd701e9",
+            "name": "Ms. Anonymous",
+            "x": 7,
+            "y": 10
+        },
+        {
+            "id": "56ed4ec36bc75d6e4dd701ea",
+            "name": "Ms. Anonymous",
+            "x": 52,
+            "y": 72
+        },
+        {
+            "id": "56ed4efb6bc75d6e4dd701eb",
+            "name": "Ms. Anonymous",
+            "x": 43,
+            "y": 8
+        },
+        {
+            "id": "56ed4f026bc75d6e4dd701ec",
+            "name": "Ms. Anonymous",
+            "x": 72,
+            "y": 4
+        },
+        {
+            "id": "56ed4f036bc75d6e4dd701ed",
+            "name": "Ms. Anonymous",
+            "x": 57,
+            "y": 41
+        },
+        {
+            "id": "56ed4f056bc75d6e4dd701ee",
+            "name": "Ms. Anonymous",
+            "x": 15,
+            "y": 27
+        },
+        {
+            "id": "56ed4f0a6bc75d6e4dd701ef",
+            "name": "Ms. Anonymous",
+            "x": 28,
+            "y": 52
+        },
+        {
+            "id": "56ed4f136bc75d6e4dd701f0",
+            "name": "Ms. Anonymous",
+            "x": 46,
+            "y": 68
+        },
+        {
+            "id": "56ed4f2c6bc75d6e4dd701f1",
+            "name": "Ms. Anonymous",
+            "x": 95,
+            "y": 82
+        },
+        {
+            "id": "56ed4f2d6bc75d6e4dd701f2",
+            "name": "Ms. Anonymous",
+            "x": 95,
+            "y": 5
+        },
+        {
+            "id": "56ed4f306bc75d6e4dd701f3",
+            "name": "Ms. Anonymous",
+            "x": 55,
+            "y": 75
+        },
+        {
+            "id": "56ed4f756bc75d6e4dd701f4",
+            "name": "Ms. Anonymous",
+            "x": 65,
+            "y": 57
+        },
+        {
+            "id": "56ed4f776bc75d6e4dd701f5",
+            "name": "Ms. Anonymous",
+            "x": 59,
+            "y": 45
+        },
+        {
+            "id": "56ed4f796bc75d6e4dd701f6",
+            "name": "Ms. Anonymous",
+            "x": 15,
+            "y": 51
+        },
+        {
+            "id": "56ed4f916bc75d6e4dd701f7",
+            "name": "Ms. Anonymous",
+            "x": 75,
+            "y": 54
+        },
+        {
+            "id": "56ed4f926bc75d6e4dd701f8",
+            "name": "Ms. Anonymous",
+            "x": 65,
+            "y": 54
+        },
+        {
+            "id": "56ed500a6bc75d6e4dd701f9",
+            "name": "Ms. Anonymous",
+            "x": 45,
+            "y": 45
+        },
+        {
+            "id": "56ed50336bc75d6e4dd701fa",
+            "name": "Ms. Anonymous",
+            "x": 65,
+            "y": 57
+        }
+    ],
+    "round": 0,
+    "board": {
+        "height": 100,
+        "width": 100
+    },
+    "id": "56ed4e866bc75d6e4dd701e8"
+}
+
+
