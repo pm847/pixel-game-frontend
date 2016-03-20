@@ -24,7 +24,7 @@ $(document).ready(function() {
 			url: "http://172.17.183.204/api/user",
 			type: "POST",
 			dataType: "json",
-			data: userName,
+			data: { name: userName },
 			success: function(jdata) {
 				userId = jdata.userId;
 				boardId = jdata.boardId;
