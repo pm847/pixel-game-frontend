@@ -1,24 +1,33 @@
 body{
+	background: #99BBFF;
 	width: 80%;
-    border: 3px solid #00FF00;
-	margin: auto;
+	margin: 0px auto;
 }
 
 div{
-	margin: auto;
-    border: 3px solid #000000;
-    padding: 3px;
+	background: #77DDFF;
+	margin: 0px auto;
+	display: flex;
+    align-items:center; 
 }
 
-.main{
-	display: inline-block;
+p{
+	font-size: 36px;
+	font-family: "Comic Sans MS";
+	margin: 0px auto;
+}
+
+#top{
+	padding: 8px;
+	text-align: right;
+	background: #00FFCC;
+    border: 1px solid #00FFCC;
+}
+
+#bottom{
+	margin: 0px auto; 
 }
 
 #board{
-	border: 3px solid #0000F0;
-}
-
-#chatroom{
-	width: 47%;
-	border: 3px solid #FF0000;
+	margin: 0px auto;
 }

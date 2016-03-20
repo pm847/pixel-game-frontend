@@ -2,15 +2,14 @@ var cubeLen = 40;
 var cubeNum = 25;
 
 var userId, boardId, round = -1;
-var userPos_X, userPos_Y;
+var userPos_X, userPos_Y, check = true;
 var redCount = 1;
 
 var canvas = $("#board")[0];
 
 $(document).ready(function() {
-	/*set canvas size and draw it*/
-	canvas.width = cubeLen * cubeNum;
-	canvas.height = cubeLen * cubeNum;
+	
+	onStart();
 
 	/*Create a 2d array for board and initial it*/
 	var arr_board = new Array(cubeNum);
@@ -38,7 +37,7 @@ $(document).ready(function() {
 		});
 	}
 
-	setInterval(getBoardData, 1000, arr_board);
+	setInterval(getBoardData, 1500, arr_board);
 
 	/*使用者click之後，變色、紀錄位置、回傳位置*/
 	//之後要增加換位置
@@ -62,6 +61,20 @@ $(document).ready(function() {
 	};
 });
 
+/*初始畫布大小以及onload介面*/
+function onStart() {
+	/*set canvas size and draw it*/
+	canvas.width = cubeLen * cubeNum;
+	canvas.height = cubeLen * cubeNum;
+
+	var ctx = canvas.getContext("2d");
+	ctx.font = "80px Comic Sans MS";
+	ctx.fillStyle = "red";
+	ctx.textAlign = "center";
+	ctx.fillText("Loading...", cubeLen * cubeNum / 2, cubeLen * cubeNum / 2);
+
+}
+
 /*剛進入遊戲和接下來不斷去找server要資料，確認局數相同，
   一旦不同，則更新所有棋盤資訊。*/
 function getBoardData(arr_board) {
@@ -71,7 +84,10 @@ function getBoardData(arr_board) {
 		type: "GET",
 		dataType: "json",
 		success: function(getJData) { //update true for light pos
-			if (round !== getJData.round) {
+			if (getJData.status === "win") //Game over
+				gameOver();
+
+			if (round !== getJData.round && check) { //if round changes, update all data
 				round = getJData.round;
 
 				var players = getJData.players;
@@ -80,19 +96,19 @@ function getBoardData(arr_board) {
 					for (var j = 0; j < cubeNum; j++)
 					arr_board[i][j] = false;
 
-				for (var i = 0; i < players.length; i++) //black for other users
+				for (var i = 0; i < players.length; i++) //green for other users
 					arr_board[players[i].x][players[i].y] = true;
 
 				for (var i = 0; i < getJData.goals.length; i++) //blue for goal
-					arr_board[getJData.goals[i].x][getJData.goals[i].y] = "blue";
+					arr_board[getJData.goals[i].x][getJData.goals[i].y] = "goal";
 
-				for (var i = 0; i < players.length; i++) { //orange for user now
+				for (var i = 0; i < players.length; i++) { //#32CD32 for user now
 					if (players[i].id === userId) {
 						userPos_X = players[i].x;
 						userPos_Y = players[i].y;
 					}
 				}
-				arr_board[userPos_X][userPos_Y] = "orange";
+				arr_board[userPos_X][userPos_Y] = "now";
 
 				drawBoard(arr_board);
 				redCount--;
@@ -113,9 +129,9 @@ function drawBoard(arr_board) {
 	for (var i = 0; i < parseInt(canvas.width / cubeLen); i++) {
 		for (var j = 0; j < parseInt(canvas.height / cubeLen); j++) {
 			ctx.strokeRect(i * cubeLen, j * cubeLen, cubeLen, cubeLen); //畫邊框
-			ctx.fillStyle = arr_board[i][j] === true ? "#000000" : "#7B7B7B";
-			if (arr_board[i][j] === "orange") ctx.fillStyle = "#FF5511 ";
-			else if (arr_board[i][j] === "blue") ctx.fillStyle = "#0000FF";
+			ctx.fillStyle = arr_board[i][j] === true ? "#00FA9A" : "#7B7B7B";
+			if (arr_board[i][j] === "now") ctx.fillStyle = "#32CD32";
+			else if (arr_board[i][j] === "goal") ctx.fillStyle = "#5555FF";
 			ctx.fillRect(i * cubeLen, j * cubeLen, cubeLen, cubeLen);
 		}
 	}
@@ -129,7 +145,7 @@ function setPos(e) {
 
 	if (redCount < 1) {
 		if (clickX - userPos_X === 0 && Math.abs(clickY - userPos_Y) === 1 || clickY - userPos_Y === 0 && Math.abs(clickX - userPos_X) === 1) {
-			ctx.fillStyle = "#FF0000";
+			ctx.fillStyle = "#FFFF00";
 			ctx.fillRect(clickX * cubeLen, clickY * cubeLen, cubeLen, cubeLen);
 			redCount++;
 
@@ -157,4 +173,16 @@ function setPos(e) {
 			});
 		}
 	}
+}
+
+function gameOver() {
+	check = false;
+	var ctx = canvas.getContext("2d");
+	ctx.fillStyle = "#000000";
+	ctx.fillRect(0, 0, cubeNum * cubeLen, cubeNum * cubeLen);
+	ctx.font = "80px Comic Sans MS";
+	ctx.fillStyle = "red";
+	ctx.textAlign = "center";
+	ctx.fillText("Game Over!", cubeLen * cubeNum / 2, cubeLen * cubeNum / 2);
+
 }
